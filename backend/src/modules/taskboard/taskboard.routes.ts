@@ -1,0 +1,11 @@
+import { Router } from 'express';
+import { controller as c } from './taskboard.controller.js';
+export const router = Router();
+router.get('/boards', c.list);
+router.post('/boards', c.create);
+router.get('/boards/:id', c.get);
+router.post('/boards/:id/columns', c.column);
+router.post('/cards', c.card);
+router.patch('/cards/:id', c.update);
+router.patch('/cards/:id/move', c.move);
+router.delete('/cards/:id', c.remove);

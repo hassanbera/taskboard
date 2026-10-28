@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Board {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String   @db.VarChar(100)
+  description String   @default("") @db.VarChar(500)
+  createdAt   DateTime @default(now())
+  columns     Column[]
+}
+
+model Column {
+  id       String @id @default(uuid()) @db.Uuid
+  name     String @db.VarChar(60)
+  position Int
+  boardId  String @db.Uuid
+  board    Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  cards    Card[]
+
+  @@index([boardId, position])
+}
+
+model Card {
+  id          String    @id @default(uuid()) @db.Uuid
+  title       String    @db.VarChar(160)
+  description String    @default("") @db.VarChar(2000)
+  assignee    String    @default("") @db.VarChar(80)
+  label       String    @default("Genel") @db.VarChar(30)
+  priority    String    @default("NORMAL") @db.VarChar(10)
+  dueDate     DateTime? @db.Date
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  columnId    String    @db.Uuid
+  column      Column    @relation(fields: [columnId], references: [id], onDelete: Cascade)
+
+  @@index([columnId, createdAt])
+}
