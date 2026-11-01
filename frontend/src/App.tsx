@@ -12,7 +12,18 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import { api, message, date } from './lib/api';
-import { Shell, Modal, Notice, Stat, Loading, Empty } from './components/ui';
+import {
+  Shell,
+  Modal,
+  Notice,
+  Stat,
+  Loading,
+  Empty,
+  UiButton,
+  UiInput,
+  UiTextarea,
+  UiSelect,
+} from './components/ui';
 import type { Board, BoardSummary, Card } from './types';
 export default function App() {
   const [boards, setBoards] = useState<BoardSummary[]>([]),
@@ -122,10 +133,10 @@ export default function App() {
       active="Panolar"
       subtitle="İşleri görünür kıl. Bir sonraki adıma odaklan."
       actions={
-        <button className="primary" onClick={() => setModal('board')}>
+        <UiButton className="primary" onClick={() => setModal('board')}>
           <Plus size={18} />
           Yeni pano
-        </button>
+        </UiButton>
       }
     >
       <Notice error={error} clear={() => setError('')} />
@@ -161,18 +172,22 @@ export default function App() {
             <span className="square-icon">
               <LayoutGrid size={18} />
             </span>
-            <select aria-label="Pano seç" value={selected} onChange={(e) => choose(e.target.value)}>
+            <UiSelect
+              aria-label="Pano seç"
+              value={selected}
+              onChange={(e) => choose(e.target.value)}
+            >
               {boards.map((b) => (
                 <option key={b.id} value={b.id}>
                   {b.name}
                 </option>
               ))}
-            </select>
+            </UiSelect>
             <span className="badge">{all.length} görev</span>
           </div>
           <label className="search">
             <Search size={16} />
-            <input
+            <UiInput
               placeholder="Kartlarda ara…"
               aria-label="Kartlarda ara"
               value={search}
@@ -209,13 +224,13 @@ export default function App() {
                   <span className="column-dot" />
                   <h3>{column.name}</h3>
                   <span className="count">{column.cards.length}</span>
-                  <button
+                  <UiButton
                     className="icon-button"
                     aria-label={column.name + ' sütununa kart ekle'}
                     onClick={() => newCard(column.id)}
                   >
                     <Plus size={17} />
-                  </button>
+                  </UiButton>
                 </div>
                 <div className="column-cards">
                   {column.cards
@@ -225,7 +240,7 @@ export default function App() {
                         .includes(search.toLocaleLowerCase('tr')),
                     )
                     .map((card) => (
-                      <button
+                      <UiButton
                         key={card.id}
                         className="task-card"
                         draggable={!busy}
@@ -270,19 +285,19 @@ export default function App() {
                               : '–'}
                           </span>
                         </div>
-                      </button>
+                      </UiButton>
                     ))}
-                  <button className="add-card" onClick={() => newCard(column.id)}>
+                  <UiButton className="add-card" onClick={() => newCard(column.id)}>
                     <Plus size={16} />
                     Görev ekle
-                  </button>
+                  </UiButton>
                 </div>
               </section>
             ))}
-            <button className="add-column" onClick={() => setModal('column')}>
+            <UiButton className="add-column" onClick={() => setModal('column')}>
               <Plus size={17} />
               Sütun ekle
-            </button>
+            </UiButton>
           </div>
         )}
       </section>
@@ -309,12 +324,17 @@ export default function App() {
               <>
                 <label>
                   Ad
-                  <input name="name" required maxLength={modal === 'board' ? 100 : 60} autoFocus />
+                  <UiInput
+                    name="name"
+                    required
+                    maxLength={modal === 'board' ? 100 : 60}
+                    autoFocus
+                  />
                 </label>
                 {modal === 'board' && (
                   <label>
                     Açıklama
-                    <textarea name="description" maxLength={500} />
+                    <UiTextarea name="description" maxLength={500} />
                   </label>
                 )}
               </>
@@ -322,7 +342,7 @@ export default function App() {
               <>
                 <label>
                   Görev başlığı
-                  <input
+                  <UiInput
                     name="title"
                     required
                     maxLength={160}
@@ -332,7 +352,7 @@ export default function App() {
                 </label>
                 <label>
                   Açıklama
-                  <textarea
+                  <UiTextarea
                     name="description"
                     maxLength={2000}
                     defaultValue={editing?.description}
@@ -341,7 +361,7 @@ export default function App() {
                 <div className="form-grid">
                   <label>
                     Etiket
-                    <input
+                    <UiInput
                       name="label"
                       required
                       maxLength={30}
@@ -350,19 +370,19 @@ export default function App() {
                   </label>
                   <label>
                     Görevli
-                    <input name="assignee" maxLength={80} defaultValue={editing?.assignee} />
+                    <UiInput name="assignee" maxLength={80} defaultValue={editing?.assignee} />
                   </label>
                   <label>
                     Öncelik
-                    <select name="priority" defaultValue={editing?.priority ?? 'NORMAL'}>
+                    <UiSelect name="priority" defaultValue={editing?.priority ?? 'NORMAL'}>
                       <option value="LOW">Düşük</option>
                       <option value="NORMAL">Normal</option>
                       <option value="HIGH">Yüksek</option>
-                    </select>
+                    </UiSelect>
                   </label>
                   <label>
                     Son tarih
-                    <input
+                    <UiInput
                       name="dueDate"
                       type="date"
                       defaultValue={editing?.dueDate?.slice(0, 10)}
@@ -372,7 +392,7 @@ export default function App() {
                 {editing && (
                   <label>
                     Sütuna taşı
-                    <select
+                    <UiSelect
                       value={editing.columnId}
                       disabled={busy}
                       onChange={async (e) => {
@@ -384,14 +404,14 @@ export default function App() {
                           {c.name}
                         </option>
                       ))}
-                    </select>
+                    </UiSelect>
                   </label>
                 )}
               </>
             )}
             <div className="form-actions">
               {editing && modal === 'card' && (
-                <button
+                <UiButton
                   type="button"
                   className="danger"
                   disabled={busy}
@@ -402,14 +422,14 @@ export default function App() {
                 >
                   <Trash2 size={16} />
                   Sil
-                </button>
+                </UiButton>
               )}
-              <button type="button" className="secondary" onClick={() => setModal(null)}>
+              <UiButton type="button" className="secondary" onClick={() => setModal(null)}>
                 Vazgeç
-              </button>
-              <button className="primary" disabled={busy}>
+              </UiButton>
+              <UiButton className="primary" disabled={busy}>
                 {busy ? 'Kaydediliyor…' : 'Kaydet'}
-              </button>
+              </UiButton>
             </div>
           </form>
         </Modal>

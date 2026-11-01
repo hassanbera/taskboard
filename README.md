@@ -8,6 +8,10 @@ React + TypeScript · Express + TypeScript · PostgreSQL + Prisma. Next.js içer
 
 [Telefon görünümü](docs/mobile.png)
 
+## Arayüz
+
+**shadcn/ui** · Taş ve kiremit tonları, koyu proje şeridi ve Kanban sütunları. Tema sınırları ve doğrulama notları: [Arayüz sistemi](docs/ui.md).
+
 ## Özellikler
 
 - Pano ve özel sütun oluşturma
